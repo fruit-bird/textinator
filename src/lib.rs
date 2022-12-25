@@ -11,7 +11,7 @@
 //     - if command takes no args          --> clipboard copy
 //     - if commands takes arg (string)    --> output to terminal
 //     + remove need for env var
-//     + takes -c flag to copy the output to the clipboard
+//     + takes --paste flag to copy the output to the clipboard
 
 use anyhow::Result;
 use arboard::Clipboard;
@@ -19,6 +19,7 @@ use clap::{arg, command, ArgMatches};
 use rand::Rng;
 use std::fmt::Display;
 
+#[derive(Default)]
 pub struct Mocker(String);
 
 impl Mocker {
@@ -27,13 +28,12 @@ impl Mocker {
         Ok(Self(output))
     }
 
-    /// Copies the input from the clipboard and pastes it back into the clipboard
+    /// Takes the input from the clipboard
     pub fn new_from_clipboard() -> Result<Self> {
         let mut clipboard = Clipboard::new()?;
 
         let input = clipboard.get_text().unwrap_or_default();
         let output = Self::mocking_spongebob_case(input);
-        clipboard.set_text(&output)?;
 
         Ok(Self(output))
     }
@@ -66,12 +66,12 @@ impl Display for Mocker {
 
 fn cli_builder() -> ArgMatches {
     let matches = command!()
-        .author("fruit-bird")
         .about("Converts text into MoCkiNg case")
-        .arg(arg!(<STRING> "Text to convert. Must be in double quotes").required(false)) // this is optional when -c is used, unless i change it to do clipboard id not given text
-        .arg(arg!(-i --input <STRING> "Text to convert. Must be in double quotes").required(false)) // this is optional when -c is used, unless i change it to do clipboard id not given text
-        .arg(arg!(-c --clipboard "Copies conversion to clipboard").required(false))
-        // .arg(arg!(-r --reverse "Converts text back to original state").required(false)) // this should copy og text into some file somewhere
+        .arg(arg!(<STRING> "Text to convert").required(false))
+        .arg(arg!(-c --clipboard "Converts text from the clipboard").required(false))
+        .arg(arg!(-p --paste "Pastes the conversion to the clipboard").required(false))
+        // this should copy og text into some file somewhere
+        // .arg(arg!(-r --reverse "Converts text back to original state").required(false))
         .get_matches();
     matches
 }
@@ -79,17 +79,21 @@ fn cli_builder() -> ArgMatches {
 pub fn run() -> Result<()> {
     let matches = cli_builder();
 
-    let output = match matches.get_one::<String>("input") {
+    let mut output = match matches.get_one::<String>("STRING") {
         Some(text) => Mocker::new(text)?,
-        None => Mocker::new_from_clipboard()?,
+        None => Mocker("No input given.\nUse --help for more info".to_string()), // workaround, there are better ways
     };
 
     if matches.get_flag("clipboard") {
-        Clipboard::new()?.set_text(&output.0)?;
-        println!("Your MoCkiNg text has been copied into your clipboard!\n");
+        output = Mocker::new_from_clipboard()?;
     }
 
-    println!("{}", output);
+    println!("\n{}\n", output);
+
+    if matches.get_flag("paste") {
+        Clipboard::new()?.set_text(&output.0)?;
+        println!("Your MoCkiNg text has been copied into your clipboard!");
+    }
 
     Ok(())
 }
