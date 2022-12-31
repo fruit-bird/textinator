@@ -20,6 +20,8 @@ $ cargo build --release
 $ cp target/release/mock /usr/local/bin # on Unix systems
 ```
 
+Otherwise, a binary corresponding to your OS may be available in [Releases](https://github.com/fruit-bird/mock/releases)
+
 ## What is This?
 This is just a little fun project for myself to apply Rust and learn to use some crates. No one really needs a command to `mock`
 

@@ -1,6 +1,6 @@
 fn main() {
     if let Err(e) = mock::run() {
-        eprintln!("Error while parsing the code: {:#?}", e);
+        eprintln!("{}", e);
         std::process::exit(1);
     }
 }
