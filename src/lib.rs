@@ -13,13 +13,13 @@
 //      + remove need for env var
 //      + takes --paste flag to copy the output to the clipboard
 // (have error messages be more expressive and put them in an error enum)
+// Make Mocker a unit struct, as there is no need to store the conversion string
 
 use anyhow::Result;
 use arboard::Clipboard;
 use clap::{arg, command, ArgMatches};
 use rand::Rng;
 use std::{
-    fmt::Display,
     fs::{self, File},
     io::Write,
     path::Path,
@@ -34,28 +34,24 @@ pub enum MockerError {
     FileReading,
 }
 
-#[derive(Debug, Default)]
-pub struct Mocker(String);
+pub struct Mocker;
 
 impl Mocker {
     /// Converts passed input into MoCkiNg case
-    pub fn new(input: impl AsRef<str>) -> Result<Self> {
-        let output = Self::mocking_spongebob_case(input);
-        Ok(Self(output))
+    pub fn new(input: impl AsRef<str>) -> String {
+        Self::mocking_spongebob_case(input)
     }
 
     /// Converts clipboard contents into MoCkiNg case
-    pub fn new_from_clipboard() -> Result<Self> {
-        let mut clipboard = Clipboard::new()?;
-
+    pub fn new_from_clipboard() -> String {
+        let mut clipboard = Clipboard::new().expect("Could not fetch the clipboard contents");
         let input = clipboard.get_text().unwrap_or_default();
-        let output = Self::mocking_spongebob_case(input);
 
-        Ok(Self(output))
+        Self::mocking_spongebob_case(input)
     }
 
     /// Converts file contents into MoCkiNg case, and copies the conversion into a new file
-    pub fn new_from_file(path: impl AsRef<Path>) -> Result<Self> {
+    pub fn new_from_file(path: impl AsRef<Path>) -> Result<String> {
         let input = fs::read_to_string(&path)?;
         let output = Self::mocking_spongebob_case(input);
         let new_path = path
@@ -67,7 +63,7 @@ impl Mocker {
             .collect::<String>()
             + "_mock.md";
         File::create(new_path)?.write_all(output.as_bytes())?;
-        Ok(Self(output))
+        Ok(output)
     }
 
     fn mocking_spongebob_case(input: impl AsRef<str>) -> String {
@@ -86,13 +82,7 @@ impl Mocker {
                     c
                 }
             })
-            .collect()
-    }
-}
-
-impl Display for Mocker {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+            .collect::<String>()
     }
 }
 
@@ -111,7 +101,7 @@ pub fn run() -> Result<()> {
     let matches = cli();
 
     let output = if matches.get_flag("clipboard") {
-        Mocker::new_from_clipboard()?
+        Mocker::new_from_clipboard()
     }
     // get_flag doesn't work here, but contains_id does for some reason
     // will do for now
@@ -122,15 +112,15 @@ pub fn run() -> Result<()> {
         }
     } else {
         match matches.get_one::<String>("STRING") {
-            Some(text) => Mocker::new(text)?,
+            Some(text) => Mocker::new(text),
             None => return Err(MockerError::NoInput.into()),
         }
     };
 
-    println!("\n{}\n", output);
+    println!("\n{}", output);
 
     if matches.get_flag("paste") {
-        Clipboard::new()?.set_text(output.0)?;
+        Clipboard::new()?.set_text(output)?;
     }
 
     Ok(())
