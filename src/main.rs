@@ -1,6 +1,12 @@
+mod mocker;
+
+use mocker::Mocker;
+use std::process;
+use text_converter::TextConverterCLI;
+
 fn main() {
-    if let Err(e) = mock::run() {
+    if let Err(e) = Mocker::run() {
         eprintln!("{}", e);
-        std::process::exit(1);
+        process::exit(1);
     }
 }

@@ -1,5 +1,5 @@
 [package]
-name = "mock"
+name = "text_converter"
 version = "0.1.2"
 edition = "2021"
 authors = ["fruit-bird"]
