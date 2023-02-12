@@ -1,6 +1,6 @@
 [package]
 name = "text_converter"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["fruit-bird"]
 
@@ -9,6 +9,6 @@ authors = ["fruit-bird"]
 [dependencies]
 anyhow = "1.0.68"
 arboard = "3.2.0"
-clap = { version = "4.0.30", features = ["cargo"] }
+clap = { version = "4.0.30", features = ["cargo", "derive"] }
 rand = "0.8.5"
 thiserror = "1.0.38"

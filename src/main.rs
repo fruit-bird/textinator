@@ -1,12 +1,9 @@
-mod mocker;
+mod textinator;
 
-use mocker::Mocker;
-use std::process;
-use text_converter::TextConverterCLI;
+use clap::Parser;
+use textinator::Textinator;
 
 fn main() {
-    if let Err(e) = Mocker::run() {
-        eprintln!("{}", e);
-        process::exit(1);
-    }
+    let cli = Textinator::parse();
+    cli.run();
 }
