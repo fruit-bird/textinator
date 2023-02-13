@@ -1,12 +1,13 @@
 //! # Textinator
 //! A text conversion CLI
 
+// text converters
 mod mock;
 mod morse;
 mod reverse;
-mod default;
 
+// cli stuff
 mod builder_macro;
-mod textinator;
+mod cli;
 
-pub use textinator::Textinator;
+pub use cli::Textinator;
