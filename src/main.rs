@@ -1,7 +1,8 @@
-mod textinator;
+mod subcommands;
+mod texinator;
 
 use clap::Parser;
-use textinator::Textinator;
+use texinator::Textinator;
 
 fn main() {
     let cli = Textinator::parse();

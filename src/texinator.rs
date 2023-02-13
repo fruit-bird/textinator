@@ -1,9 +1,9 @@
-use crate::textinator::{mock::MockCommand, morse::MorseCommand, reverse::ReverseCommand};
+use crate::subcommands::*;
 use clap::{Parser, Subcommand};
 
-/// Back in Gimmelshtump, when my father made me live as a garden gnome, I found myself modifying text inside of my head
+/// A platypus?
 #[derive(Debug, Parser)]
-#[clap(author, version, about, long_about = None)]
+#[clap(author, version, about)]
 pub struct Textinator {
     #[clap(subcommand)]
     command: TextUtility,
@@ -17,11 +17,11 @@ impl Textinator {
 
 #[derive(Debug, Subcommand)]
 enum TextUtility {
-    /// Convert into MoCkiNg case
+    /// ConVeRt InTo MoCKING cAsE
     Mock(MockCommand),
     /// txet esreveR
     Reverse(ReverseCommand),
-    /// Convert into -- --- .-. ... . code
+    /// Convert into -- --- .-. ... .
     Morse(MorseCommand),
 }
 

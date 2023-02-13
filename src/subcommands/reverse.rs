@@ -22,27 +22,23 @@ pub struct ReverseCommand {
 impl ReverseCommand {
     // turn this into macro (or bounded generic function), so it could take any type that impls TextConverter
     pub fn parse_args(&self) -> String {
-        let mut _output = String::new();
-
-        if let Some(ref input) = self.string_to_convert {
-            _output = Self::new_from_text(input);
-        }
-
-        if let Some(ref file) = self.from_file {
-            _output = Self::new_from_file(file);
-        }
-
-        if self.from_clipboard {
-            _output = Self::new_from_clipboard();
-        }
+        let output = if let Some(ref input) = self.string_to_convert {
+            Self::new_from_text(input)
+        } else if let Some(ref file) = self.from_file {
+            Self::new_from_file(file)
+        } else if self.from_clipboard {
+            Self::new_from_clipboard()
+        } else {
+            unreachable!()
+        };
 
         if self.paste {
             Clipboard::new()
                 .expect("Error while fetching clipboard")
-                .set_text(&_output)
+                .set_text(&output)
                 .expect("Error while pasting to clipboard");
         }
-        _output
+        output
     }
 }
 
