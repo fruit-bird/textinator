@@ -1,6 +1,10 @@
+mod subcommands;
+mod texinator;
+
+use clap::Parser;
+use texinator::Textinator;
+
 fn main() {
-    if let Err(e) = mock::run() {
-        eprintln!("{}", e);
-        std::process::exit(1);
-    }
+    let cli = Textinator::parse();
+    cli.run();
 }

@@ -1,28 +1,33 @@
-# Mock
-A CLI to convert text into **"MOckinG SPonGebOb CASE"**
+# Textinator
+A CLI to convert text into many formats. Yes it's a play on Dr. Doofenschmirtz's inventions
 
 ## Usage
-Default usage
 ```bash
-$ mock "string of text you want to convert"
-STRiNg of TExT YOU waNt TO COnVeRT
+textinator [subcommand] <options> [STRING]
 ```
 
-Extra capabilities such as interacting with the clipboard can be found with
-```bash
-$ mock --help
-```
+### Subcommands
+- `mock` : CONVeRts TExT into ThE mocKINg SPONGEBoB caSe
+- `reverse` : txet sesreveR
+- `morse` : -.-- --- ..- / -.-. .- ..- --. .... - / .- -. / . .- ... - . .-. / . --. --.
 
-## Building
-This command can be exported using
+### Options
+Capable of interacting with the clipboard, or with files
 ```bash
-$ cargo build --release
-$ cp target/release/mock /usr/local/bin # on Unix systems
-```
+# converts string and pastes the conversion to the clipboard
+textinator mock -p "my mango is to blow up" 
 
-Otherwise, a binary corresponding to your OS may be available in [Releases](https://github.com/fruit-bird/mock/releases)
+# converts clipboard contents
+textinator reverse -c
+
+# converts clipboard contents and copies it back
+textinator morse -cp
+
+# converts file.txt contents
+textinator morse -f file.txt
+```
 
 ## What is This?
-This is just a little fun project for myself to apply Rust and learn to use some crates. No one really needs a command to `mock`
+This is just a fun little project for myself to apply Rust and learn to use some crates. 
 
-It just happened after I was joking with a friend over text and wanted something more efficient than hitting SHIFT every other character
+Started with `mock` only, when I was joking with a friend over text and wanted something more efficient than hitting SHIFT every other character. Decided to add more commmands to it later on
