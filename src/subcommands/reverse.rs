@@ -20,7 +20,6 @@ pub struct ReverseCommand {
 }
 
 impl ReverseCommand {
-    // turn this into macro (or bounded generic function), so it could take any type that impls TextConverter
     pub fn parse_args(&self) -> String {
         let output = if let Some(ref input) = self.string_to_convert {
             Self::new_from_text(input)
